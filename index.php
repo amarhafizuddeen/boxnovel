@@ -91,7 +91,7 @@ if (!isset($_GET['novel'])){
 ?>
 		
 
-				<p><a href="crawler.php?novel=<?= $novel ?>" style="color: white"><?= $novelName ?></a><span style="float: right;"><?php if($timeChange) echo "<i>NEW</i>" ?> <?= $time[0] ?></span></p></p>
+				<p><a href="index.php?novel=<?= $novel ?>" style="color: white"><?= $novelName ?></a><span style="float: right;"><?php if($timeChange) echo "<i>NEW</i>" ?> <?= $time[0] ?></span></p></p>
 				<hr>
 <?php
 	}
@@ -129,7 +129,7 @@ if (!isset($_GET['novel'])){
 		<div style="margin: 10px; color: white;">
 			<?php 
 					echo "<h2>". $novelName ."</h2>";
-					echo "<h3><a href='crawler.php'>Back to home</a></h3>";
+					echo "<h3><a href='index.php'>Back to home</a></h3>";
 					$url = "https://boxnovel.com/novel/$novel/?";
 
 					curl_setopt($curl, CURLOPT_URL, $url);
@@ -158,7 +158,7 @@ if (!isset($_GET['novel'])){
 						if (isset($time[$i])) {
 			?>
 							
-							<p style="border-bottom: 1px solid;"><a href="crawler.php?novel=<?= $novel ?>&chapter=<?= $var ?>"><?= $name[$i] ?></a> <span style="float: right;"> <?= $time[$i] ?></span></p>
+							<p style="border-bottom: 1px solid;"><a href="index.php?novel=<?= $novel ?>&chapter=<?= $var ?>"><?= $name[$i] ?></a> <span style="float: right;"> <?= $time[$i] ?></span></p>
 
 			<?php	
 						}
@@ -236,13 +236,13 @@ if (!isset($_GET['novel'])){
 			<h3><?= $chapterName ?></h3>
 			<center>
 				<p style="padding: 10px;">
-				<a href="crawler.php?novel=<?= $novel ?>&chapter=<?= $chapter-1 ?>">< Prev</a>
+				<a href="index.php?novel=<?= $novel ?>&chapter=<?= $chapter-1 ?>">< Prev</a>
 				|
-				<a href="crawler.php?novel=<?= $novel ?>" style="color: white">TOC</a>
+				<a href="index.php?novel=<?= $novel ?>" style="color: white">TOC</a>
 
 			<?php if ($chapter < $latest_chapter) { ?>
 				|
-				<a href="crawler.php?novel=<?= $novel ?>&chapter=<?= $chapter+1 ?>">Next ></a>
+				<a href="index.php?novel=<?= $novel ?>&chapter=<?= $chapter+1 ?>">Next ></a>
 				</p>
 			<?php } ?>
 			</center>
@@ -262,13 +262,13 @@ if (!isset($_GET['novel'])){
 			<h2><?= "Chapter " . $chapter ?></h2>
 			<center>
 				<p style="padding: 10px;">
-				<a href="crawler.php?novel=<?= $novel ?>&chapter=<?= $chapter-1 ?>">< Prev</a>
+				<a href="index.php?novel=<?= $novel ?>&chapter=<?= $chapter-1 ?>">< Prev</a>
 				|
-				<a href="crawler.php?novel=<?= $novel ?>" style="color: white">TOC</a>
+				<a href="index.php?novel=<?= $novel ?>" style="color: white">TOC</a>
 
     			<?php if ($chapter < $latest_chapter) { ?>
     				|
-    				<a href="crawler.php?novel=<?= $novel ?>&chapter=<?= $chapter+1 ?>">Next ></a>
+    				<a href="index.php?novel=<?= $novel ?>&chapter=<?= $chapter+1 ?>">Next ></a>
     				</p>
     			<?php } ?>
 			</center>
