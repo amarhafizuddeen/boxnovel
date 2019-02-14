@@ -99,14 +99,6 @@ if (!isset($_GET['novel'])){
 ?>
 			</div>
 		</body>
-			<script>
-				function hideImg() {
-					var img = document.getElementsByTagName("img");
-					img[0].parentNode.removeChild(img[0]);
-				}
-
-				window.onload = hideImg;
-			</script>
 	</html>
 
 <?php
@@ -166,14 +158,6 @@ if (!isset($_GET['novel'])){
 			?>
 		</div>
 	</body>
-			<script>
-				function hideImg() {
-					var img = document.getElementsByTagName("img");
-					img[0].style.display = "none";
-				}
-
-				window.onload = hideImg;
-			</script>
 	</html>
 	
 	<?php } else {
@@ -224,6 +208,10 @@ if (!isset($_GET['novel'])){
 	$result = curl_exec($curl);
 
 	preg_match_all('!<div class="cha\-words">(.*?)<\/div>!', $result, $match);
+
+	if(sizeof($match[1]) === 0)
+		preg_match_all('!<div class="reading\-content">(.*?)<\/div>!', $result, $match);
+
 	$content = $match[1];
 	?>
 
@@ -277,16 +265,6 @@ if (!isset($_GET['novel'])){
     			<?php } ?>
 			</center>
 		</div>
-		<script>
-			function hideImg() {
-				var img = document.getElementsByTagName("img");
-				img[0].style.display = "none";
-			}
-
-			window.onload = hideImg;
-		</script>
 	</body>
 	</html>
 <?php }
-
-clearstatcache();
