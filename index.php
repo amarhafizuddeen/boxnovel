@@ -40,7 +40,7 @@ if (!isset($_GET['novel'])){
 		preg_match_all('!<span class="chapter\-release\-date"> <i>(.*?)<\/i> <\/span>!', $result, $match);
 		$time = $match[1];
 
-		if($time[0] !== $timeTrack[$index]){
+		if($time !== $timeTrack[$index]){
 			//Extract numbers from time
 			preg_match_all('!\d+\s!', $time[0], $matches);
 			$newTimeNum = implode('', $matches[0]);
@@ -51,7 +51,7 @@ if (!isset($_GET['novel'])){
 			$oldTimeNum = str_replace(' ', '', $oldTimeNum);
 
 			//Extract time call (secs, minutes, hours, days)
-			$newTimeCall = preg_replace('/[0-9]+/', '', $time[0]);
+			$newTimeCall = preg_replace('/[0-9]+/', '', $time);
 			$newTimeCall = str_replace(' ', '', $newTimeCall);
 
 			$oldTimeCall = preg_replace('/[0-9]+/', '', $timeTrack[0]);
@@ -85,7 +85,7 @@ if (!isset($_GET['novel'])){
 
 		}
 
-		array_push($newTime, $time[0]);
+		array_push($newTime, $time);
 
 		$index++;
 ?>
@@ -204,12 +204,16 @@ if (!isset($_GET['novel'])){
 		if ($i == 0)
 			$latest_chapter = $var;
 
-		if ($var == $chapter) 
+		if ($var === $chapter){
 			$chapterName = $name[$i];
+			break;
+		} 
 	}
 
+	
 
-    //GET CONTENT
+
+	//GET CONTENT
 	$url = "https://boxnovel.com/novel/$novel/chapter-" . $chapter . "/";
 
 	$novelName = ucwords(str_replace("-"," ",$novel));
