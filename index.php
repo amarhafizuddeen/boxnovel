@@ -263,7 +263,7 @@ if (!isset($_GET['novel'])){
 
 			<?php } ?>
 
-			<h2><?= "Chapter " . $chapter ?></h2>
+			<h3><?= $chapterName ?></h3>
 			<center>
 				<p style="padding: 10px;">
 				<a href="index.php?novel=<?= $novel ?>&chapter=<?= $chapter-1 ?>">< Prev</a>
