@@ -231,6 +231,8 @@ if (!isset($_GET['novel'])){
 				<a href="index.php?novel=<?= $novel ?>&chapter=<?= $chapter-1 ?>">< Prev</a>
 				|
 				<a href="index.php?novel=<?= $novel ?>" style="color: white">TOC</a>
+				|
+				<a href="./" style="color: white">HOME</a>
 
 			<?php if ($chapter < $latest_chapter) { ?>
 				|
@@ -257,6 +259,8 @@ if (!isset($_GET['novel'])){
 				<a href="index.php?novel=<?= $novel ?>&chapter=<?= $chapter-1 ?>">< Prev</a>
 				|
 				<a href="index.php?novel=<?= $novel ?>" style="color: white">TOC</a>
+				|
+				<a href="./" style="color: white">HOME</a>
 
     			<?php if ($chapter < $latest_chapter) { ?>
     				|
