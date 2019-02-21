@@ -2,11 +2,6 @@
 session_start();
 $curl = curl_init();
 
-if(isset($_SESSION['timeTrack']))
-	$timeTrack = $_SESSION['timeTrack'];
-else
-	$timeTrack = array();
-
 $newTime = array();
 
 if (!isset($_GET['novel'])){ 
@@ -24,8 +19,6 @@ if (!isset($_GET['novel'])){
 			<div style="margin: 10px; color: white;">
 
 <?php
-	$index = 0;
-
 	foreach ($novels as $novel) { 
 		$timeChange = false;
 		$novelName = ucwords(str_replace("-"," ",$novel));
@@ -37,66 +30,14 @@ if (!isset($_GET['novel'])){
 		$result = curl_exec($curl);
 
 		//match time released
-		preg_match_all('!<span class="chapter\-release\-date"> <i>(.*?)<\/i> <\/span>!', $result, $match);
-		$time = $match[1];
-
-		if($time !== $timeTrack[$index]){
-			//Extract numbers from time
-			preg_match_all('!\d+\s!', $time[0], $matches);
-			$newTimeNum = implode('', $matches[0]);
-			$newTimeNum = str_replace(' ', '', $newTimeNum);
-
-			preg_match_all('!\d+\s!', $timeTrack[0], $matches);
-			$oldTimeNum = implode('', $matches[0]);
-			$oldTimeNum = str_replace(' ', '', $oldTimeNum);
-
-			//Extract time call (secs, minutes, hours, days)
-			$newTimeCall = preg_replace('/[0-9]+/', '', $time);
-			$newTimeCall = str_replace(' ', '', $newTimeCall);
-
-			$oldTimeCall = preg_replace('/[0-9]+/', '', $timeTrack[0]);
-			$oldTimeCall = str_replace(' ', '', $oldTimeCall);
-
-			//Compare time then compare numbers
-			switch($newTimeCall){
-				case 'days':
-										$timeChange = false;
-										break;
-				case 'hours':
-										if($oldTimeCall == 'days')
-											$timeChange = true;
-										else if($oldTimeCall == 'hours')
-											$timeChange = ($newTimeNum < $oldTimeNum);
-										break;
-				case 'minutes':
-										if($oldTimeCall == 'days' || $oldTimeCall == 'hours')
-										$timeChange = true;
-									else if($oldTimeCall == 'minutes')
-											$timeChange = ($newTimeNum < $oldTimeNum);
-										break;
-				case 'seconds':
-				if($oldTimeCall == 'days' || $oldTimeCall == 'hours' || $oldTimeCall == 'minutes')
-										$timeChange = true;
-									else if($oldTimeCall == 'seconds')
-											$timeChange = ($newTimeNum < $oldTimeNum);
-										break;
-					
-			}
-
-		}
+		preg_match_all('!<span class="chapter\-release\-date">[^\t]*(.*)<i>(.*?)<\/i>!', $result, $match);
+		$time = $match[0];
 
 		array_push($newTime, $time);
-
-		$index++;
 ?>
-		
-
-				<p><a href="index.php?novel=<?= $novel ?>" style="color: white"><?= $novelName ?></a><span style="float: right;"><?php if($timeChange) echo "<i>NEW</i>" ?> <?= $time[0] ?></span></p></p>
+				<p><a href="index.php?novel=<?= $novel ?>" style="color: white"><?= $novelName ?></a><span style="float: right;"> <?= $time[0] ?></span></p></p>
 				<hr>
-<?php
-	}
-	$_SESSION['timeTrack'] = $newTime;
-?>
+<?php	}?>
 			</div>
 		</body>
 	</html>
@@ -133,12 +74,16 @@ if (!isset($_GET['novel'])){
 					$time = array();
 
 					//match chapters
-					preg_match_all('!<a href="https:\/\/boxnovel\.com\/novel\/' . addslashes($novel) . '\/.*?"> Chapter(.*?)<\/a>!', $result, $match);
-					$name = $match[1];
+					preg_match_all('!<a href="https:\/\/boxnovel\.com\/novel\/' . addslashes($novel) . '\/.*">[^\t]*(.*)Chapter(.*?)<\/a>!', $result, $match);
+					$chapters = $match[0];
+
+					//match name
+					preg_match_all('!Chapter [\d\s\w\-\(\)]*!', $result, $match);
+					$name = $match[0];
 
 					//match time released
-					preg_match_all('!<span class="chapter\-release\-date"> <i>(.*?)<\/i> <\/span>!', $result, $match);
-					$time = $match[1];
+					preg_match_all('!<span class="chapter\-release\-date">[^\t]*(.*)<i>(.*?)<\/i>!', $result, $match);
+					$time = $match[0];
 
 					$latest_chapter = 0;
 
@@ -174,8 +119,12 @@ if (!isset($_GET['novel'])){
 	$name = array();
 
 	//match chapters
-	preg_match_all('!<a href="https:\/\/boxnovel\.com\/novel\/' . addslashes($novel) . '\/.*?"> Chapter(.*?)<\/a>!', $result, $match);
-	$name = $match[1];
+	preg_match_all('!<a href="https:\/\/boxnovel\.com\/novel\/' . addslashes($novel) . '\/.*">[^\t]*(.*)Chapter(.*?)<\/a>!', $result, $match);
+	$chapters = $match[0];
+
+	//match name
+	preg_match_all('!Chapter [\d\s\w\-\(\)]*!', $result, $match);
+	$name = $match[0];
 
 	$latest_chapter = 0;
 	$chapterName = "Chapter name not found";
@@ -207,12 +156,12 @@ if (!isset($_GET['novel'])){
 
 	$result = curl_exec($curl);
 
-	preg_match_all('!<div class="cha\-words">(.*?)<\/div>!', $result, $match);
+	preg_match_all('!<div class="cha\-words">[^\t]*(.*)(.*?)<\/div>!', $result, $match);
 
-	if(sizeof($match[1]) === 0)
-		preg_match_all('!<div class="reading\-content">(.*?)<\/div>!', $result, $match);
+	if(sizeof($match[0]) === 0)
+		preg_match_all('!<div class="reading\-content">[^\t]*(.*)(.*?)<\/div>!', $result, $match);
 
-	$content = $match[1];
+	$content = $match[0];
 	?>
 
 	<!DOCTYPE html>
