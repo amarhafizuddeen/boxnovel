@@ -110,6 +110,7 @@ if (!isset($_GET['novel'])){
 	$chapter = $_GET['chapter'];
 	    
 	$url = "https://boxnovel.com/novel/$novel/?";
+	$novelName = ucwords(str_replace("-"," ",$novel));
 
 	curl_setopt($curl, CURLOPT_URL, $url);
 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
@@ -147,22 +148,28 @@ if (!isset($_GET['novel'])){
 
 
 	//GET CONTENT
-	$url = "https://boxnovel.com/novel/$novel/chapter-" . $chapter . "/";
-
-	$novelName = ucwords(str_replace("-"," ",$novel));
+	$url = "https://boxnovel.com/novel/reincarnation-of-the-strongest-sword-god/chapter-949/";
 
 	curl_setopt($curl, CURLOPT_URL, $url);
 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
-	$result = curl_exec($curl);
+    $result = curl_exec($curl);
+    $result = str_replace("	","",$result);
 
-	preg_match_all('!<div class="cha\-words">[^\t]*(.*)(.*?)(<\/div>)+!', $result, $match);
-
-	if(sizeof($match[0]) === 0){
-		preg_match_all('!<div class="reading\-content">([^\t]*(.*))+(.*?)([^\t]*(.*))*([^\t]*|(.*)|<\/div>)+!', $result, $match);
-	}
-
+	preg_match_all('!<div class="cha\-words">(.*?)<\/div>!', $result, $match);
 	$content = $match[0];
+
+	if(sizeof($match[0]) === 0) {
+		preg_match_all('!<div class="text\-left">!', $result, $match, PREG_OFFSET_CAPTURE);
+
+        $content = $match[0];
+        $startIndex = $match[0][0][1];
+        $startContent = substr($result,$startIndex);
+
+        $arr = explode("</div>",$startContent);
+        $content = $arr[0];
+        $content .= "</div>";
+    }
 	?>
 
 	<!DOCTYPE html>
@@ -193,7 +200,7 @@ if (!isset($_GET['novel'])){
 			
 			<?php if(sizeof($content)!=0) { ?>
 
-			<div style="font-family: 'Montserrat'"><?= $content[0] ?></div>
+			<div style="font-family: 'Montserrat'"><?= $content ?></div>
 			
 			<?php } else { ?>
 
