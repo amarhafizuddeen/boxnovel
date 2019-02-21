@@ -159,7 +159,7 @@ if (!isset($_GET['novel'])){
 	preg_match_all('!<div class="cha\-words">[^\t]*(.*)(.*?)<\/div>!', $result, $match);
 
 	if(sizeof($match[0]) === 0)
-		preg_match_all('!<div class="reading\-content">[^\t]*(.*)[^\t]*(.*)[^\t]*(.*)[^\t]*(.*)[^\t]*(.*)(.*?)!', $result, $match);
+		preg_match_all('!<div class="reading\-content">([^\t]*(.*))+(.*?)!', $result, $match);
 
 	$content = $match[0];
 	?>
