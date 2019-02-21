@@ -156,10 +156,11 @@ if (!isset($_GET['novel'])){
 
 	$result = curl_exec($curl);
 
-	preg_match_all('!<div class="cha\-words">[^\t]*(.*)(.*?)<\/div>!', $result, $match);
+	preg_match_all('!<div class="cha\-words">[^\t]*(.*)(.*?)(<\/div>)+!', $result, $match);
 
-	if(sizeof($match[0]) === 0)
-		preg_match_all('!<div class="reading\-content">([^\t]*(.*))+(.*?)<\/div>!', $result, $match);
+	if(sizeof($match[0]) === 0){
+		preg_match_all('!<div class="reading\-content">([^\t]*(.*))+(.*?)([^\t]*(.*))*(<\/div>)*!', $result, $match);
+	}
 
 	$content = $match[0];
 	?>
@@ -202,7 +203,7 @@ if (!isset($_GET['novel'])){
 
 			<?php } ?>
 
-			<h3><?= $chapterName ?></h3>
+			<h3 style="color:white"><?= $chapterName ?></h3>
 			<center>
 				<p style="padding: 10px;">
 				<a href="index.php?novel=<?= $novel ?>&chapter=<?= $chapter-1 ?>">< Prev</a>
