@@ -29,8 +29,8 @@ if (!isset($_GET['novel'])){
 
 		$result = curl_exec($curl);
 
-		//match time released
-		preg_match_all('!<span class="chapter\-release\-date">[^\t]*(.*)<i>(.*?)<\/i>!', $result, $match);
+		//match time released		
+		preg_match_all('!<span class="chapter\-release\-date"> <i>(.*?)<\/i>!', $result, $match);
 		$time = $match[0];
 
 		array_push($newTime, $time);
@@ -82,7 +82,7 @@ if (!isset($_GET['novel'])){
 					$name = $match[0];
 
 					//match time released
-					preg_match_all('!<span class="chapter\-release\-date">[^\t]*(.*)<i>(.*?)<\/i>!', $result, $match);
+					preg_match_all('!<span class="chapter\-release\-date"> <i>(.*?)<\/i>!', $result, $match);
 					$time = $match[0];
 
 					$latest_chapter = 0;
