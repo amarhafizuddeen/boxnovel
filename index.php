@@ -2,7 +2,7 @@
 session_start();
 $curl = curl_init();
 
-$newTime = array();
+$regexTime = '!<span class="chapter\-release\-date">\n+\t+<i>(.*?)<\/i>\s+<\/span>!';
 
 if (!isset($_GET['novel'])){ 
 	$novels = array("king-of-gods", "the-legend-of-futian", "reincarnation-of-the-strongest-sword-god", "library-of-heavens-path", "mmorpg-martial-gamer");
@@ -20,7 +20,6 @@ if (!isset($_GET['novel'])){
 
 <?php
 	foreach ($novels as $novel) { 
-		$timeChange = false;
 		$novelName = ucwords(str_replace("-"," ",$novel));
 		$url = "https://boxnovel.com/novel/$novel/?";
 
@@ -30,10 +29,8 @@ if (!isset($_GET['novel'])){
 		$result = curl_exec($curl);
 
 		//match time released		
-		preg_match_all('!<span class="chapter\-release\-date"> <i>(.*?)<\/i>!', $result, $match);
+		preg_match_all($regexTime, $result, $match);
 		$time = $match[0];
-
-		array_push($newTime, $time);
 ?>
 				<p><a href="index.php?novel=<?= $novel ?>" style="color: white"><?= $novelName ?></a><span style="float: right;"> <?= $time[0] ?></span></p></p>
 				<hr>
@@ -82,7 +79,7 @@ if (!isset($_GET['novel'])){
 					$name = $match[0];
 
 					//match time released
-					preg_match_all('!<span class="chapter\-release\-date"> <i>(.*?)<\/i>!', $result, $match);
+					preg_match_all($regexTime, $result, $match);
 					$time = $match[0];
 
 					$latest_chapter = 0;
@@ -91,14 +88,11 @@ if (!isset($_GET['novel'])){
 						preg_match_all('!\d+\s!', $name[$i], $matches);
 						$var = implode('', $matches[0]);
 						$var = str_replace(' ', '', $var);
-
-						if (isset($time[$i])) {
 			?>
 							
-							<p style="border-bottom: 1px solid;"><a href="index.php?novel=<?= $novel ?>&chapter=<?= $var ?>"><?= $name[$i] ?></a> <span style="float: right;"> <?= $time[$i] ?></span></p>
+						<p style="border-bottom: 1px solid;"><a href="index.php?novel=<?= $novel ?>&chapter=<?= $var ?>"><?= $name[$i] ?></a> <span style="float: right;"> <?= $time[$i] ?></span></p>
 
 			<?php	
-						}
 					}
 			?>
 		</div>
