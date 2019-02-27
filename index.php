@@ -27,6 +27,31 @@ function getTime($result){
 	return $times;
 }
 
+function timeIsNew($times){
+	$arr = [];
+	foreach ($times as $time) {			
+		$match = explode("<i>",$time);
+		$time = $match[1];
+		$new = false;
+		
+    if (strpos($time, 'min')) {
+      $new = true;
+    } else if (strpos($time, 'hour')) {    
+      // Get numbers from string
+			$match = explode(" hour", $time);
+			$time = explode(" hour", $match[0]);  
+			$time = intval($time[0]);
+			
+      // Check if the time is new
+      if ($time <= 10) {
+        $new = true;
+			}
+		}
+		$arr[] = $new;
+	}
+	return $arr;
+}
+
 if (!isset($_GET['novel'])){ 
 	$novels = array("king-of-gods", "the-legend-of-futian", "reincarnation-of-the-strongest-sword-god", "library-of-heavens-path", "mmorpg-martial-gamer");
 
@@ -54,8 +79,9 @@ if (!isset($_GET['novel'])){
 
 		//match time released
 		$time = getTime($result);
+		$new = timeIsNew($time);
 ?>
-				<p><a href="index.php?novel=<?= $novel ?>" style="color: white"><?= $novelName ?></a><span style="float: right;"> <?= $time[0] ?></span></p></p>
+				<p><a href="index.php?novel=<?= $novel ?>" style="color: white"><?= $novelName ?></a><span style="float: right;"> <?php if($new[0]) echo "NEW " ?><?= $time[0] ?></span></p></p>
 				<hr>
 <?php	}?>
 			</div>
@@ -103,6 +129,7 @@ if (!isset($_GET['novel'])){
 
 					//match time released
 					$time = getTime($result);
+					$new = timeIsNew($time);
 
 					$latest_chapter = 0;
 
@@ -114,7 +141,7 @@ if (!isset($_GET['novel'])){
 						if (isset($time[$i])) {
 			?>
 							
-							<p style="border-bottom: 1px solid;"><a href="index.php?novel=<?= $novel ?>&chapter=<?= $var ?>"><?= $name[$i] ?></a> <span style="float: right;"> <?= $time[$i] ?></span></p>
+							<p style="border-bottom: 1px solid;"><a href="index.php?novel=<?= $novel ?>&chapter=<?= $var ?>"><?= $name[$i] ?></a> <span style="float: right;"> <?php if($new[$i]) echo "NEW " ?><?= $time[$i] ?></span></p>
 
 			<?php	
 						}
