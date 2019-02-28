@@ -2,7 +2,6 @@
 session_start();
 $curl = curl_init();
 
-
 function getTime($result){
 	$regexTime = '!<span class="chapter\-release\-date">!';
 	preg_match_all($regexTime, $result, $match, PREG_OFFSET_CAPTURE);
@@ -16,12 +15,12 @@ function getTime($result){
 		// Get the first occurence of time and save it into an array
 		$startIndex = $match[0][$i][1];
 		$startContent = substr($result,$startIndex);
+		// Explode the array on </span> and get content inside <i></i>   
 		$arr = explode("</span>",$startContent);
 		$time = $arr[0];
 		$time .= "</span>";
 		
-		$times[] = $time;
-		// Explode the array on </span> and get content inside <i></i>    
+		$times[] = $time; 
 	}
 	
 	return $times;
@@ -52,21 +51,10 @@ function timeIsNew($times){
 	return $arr;
 }
 
-if (!isset($_GET['novel'])){ 
+function getHomePage(){
+	global $curl;
 	$novels = array("king-of-gods", "the-legend-of-futian", "reincarnation-of-the-strongest-sword-god", "library-of-heavens-path", "mmorpg-martial-gamer");
 
-?>
-
-<!DOCTYPE html>
-	<html>
-		<head>
-			<title>My Novel</title>
-			<meta name="viewport" content="width=device-width, initial-scale=1">
-		</head>
-		<body style=" background-color: rgb(30, 30, 30);">
-			<div style="margin: 10px; color: white;">
-
-<?php
 	foreach ($novels as $novel) { 
 		$timeChange = false;
 		$novelName = ucwords(str_replace("-"," ",$novel));
@@ -80,78 +68,64 @@ if (!isset($_GET['novel'])){
 		//match time released
 		$time = getTime($result);
 		$new = timeIsNew($time);
-?>
-				<p><a href="index.php?novel=<?= $novel ?>" style="color: white"><?= $novelName ?></a><span style="float: right;"> <?php if($new[0]) echo "NEW " ?><?= $time[0] ?></span></p></p>
-				<hr>
-<?php	}?>
-			</div>
-		</body>
-	</html>
-
-<?php
-
-} else if (isset($_GET['novel']) && !isset($_GET['chapter'])) {
-
+		
+		// Call templates
+		require("templates/_header.php");
+		require("templates/homePage.php");
+		require("templates/_footer.php");
+	}	
+}
+	
+function getTocPage(){
+	global $curl;
 	$novel = $_GET['novel'];
 	$novelName = ucwords(str_replace("-"," ",$novel));
+	$url = "https://boxnovel.com/novel/$novel/?";
 
-	?>
+	curl_setopt($curl, CURLOPT_URL, $url);
+	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
-	<!DOCTYPE html>
-	<html>
-	<head>
-		<title>My Novel - <?= $novelName ?></title>
-	    <meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" href="style.css">
-	</head>
-	<body style=" background-color: rgb(30, 30, 30);">
-		<div style="margin: 10px; color: white;">
-			<?php 
-					echo "<h2>". $novelName ."</h2>";
-					echo "<h3><a href='index.php'>Back to home</a></h3>";
-					$url = "https://boxnovel.com/novel/$novel/?";
+	$result = curl_exec($curl);
 
-					curl_setopt($curl, CURLOPT_URL, $url);
-					curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+	$name = array();
+	$time = array();
 
-					$result = curl_exec($curl);
+	//match chapters
+	preg_match_all('!<a href="https:\/\/boxnovel\.com\/novel\/' . addslashes($novel) . '\/.*">[^\t]*(.*)Chapter(.*?)<\/a>!', $result, $match);
+	$chapters = $match[0];
 
-					$name = array();
-					$time = array();
+	//match name
+	preg_match_all('!Chapter [\d\s\w\'\-\(\)(&#039;)]*!', $result, $match);
+	$name = $match[0];
 
-					//match chapters
-					preg_match_all('!<a href="https:\/\/boxnovel\.com\/novel\/' . addslashes($novel) . '\/.*">[^\t]*(.*)Chapter(.*?)<\/a>!', $result, $match);
-					$chapters = $match[0];
+	//match time released
+	$time = getTime($result);
+	$new = timeIsNew($time);
+		
+	$latest_chapter = 0;
+	$chapters = [];
 
-					//match name
-					preg_match_all('!Chapter [\d\s\w\'\-\(\)(&#039;)]*!', $result, $match);
-					$name = $match[0];
+	for ($i = 0; $i < sizeof($name); $i++) {
+		preg_match_all('!\d+\s!', $name[$i], $matches);
+		$var = implode('', $matches[0]);
+		$var = str_replace(' ', '', $var);
 
-					//match time released
-					$time = getTime($result);
-					$new = timeIsNew($time);
-
-					$latest_chapter = 0;
-
-					for ($i = 0; $i < sizeof($name); $i++) {
-						preg_match_all('!\d+\s!', $name[$i], $matches);
-						$var = implode('', $matches[0]);
-						$var = str_replace(' ', '', $var);
-
-						if (isset($time[$i])) {
-			?>
-							
-							<p style="border-bottom: 1px solid;"><a href="index.php?novel=<?= $novel ?>&chapter=<?= $var ?>"><?= $name[$i] ?></a> <span style="float: right;"> <?php if($new[$i]) echo "NEW " ?><?= $time[$i] ?></span></p>
-
-			<?php	
-						}
-					}
-			?>
-		</div>
-	</body>
-	</html>
+		if (isset($time[$i])) {
+			$chapters[$i]["var"] = $var;
+			$chapters[$i]["name"] = $name[$i];
+			$chapters[$i]["new"] = $new[$i];
+			$chapters[$i]["time"] = $time[$i];
+		}
+	}
 	
-	<?php } else {
+	// Call templates
+	require("templates/_header.php");	
+	require("templates/tocPage.php");	
+	require("templates/_footer.php");		
+}
+	
+function getChapterPage(){
+	global $curl;
 	$novel = $_GET['novel'];
 	$chapter = $_GET['chapter'];
 	    
@@ -190,23 +164,20 @@ if (!isset($_GET['novel'])){
 		} 
 	}
 
-	
-
-
 	//GET CONTENT
 	$url = "https://boxnovel.com/novel/" . $novel . "/chapter-" . $var . "/";
 
 	curl_setopt($curl, CURLOPT_URL, $url);
 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
-    $result = curl_exec($curl);
-    $result = str_replace("	","",$result);
+	$result = curl_exec($curl);
+	$result = str_replace("	","",$result);
 
 	preg_match_all('!<div class="cha\-words">!', $result, $match, PREG_OFFSET_CAPTURE);
 
 	if(sizeof($match[0]) === 0) {
 		preg_match_all('!<div class="text\-left">!', $result, $match, PREG_OFFSET_CAPTURE);
-    }
+	}
 
 	$content = $match[0];
 	$startIndex = $match[0][0][1];
@@ -215,62 +186,22 @@ if (!isset($_GET['novel'])){
 	$arr = explode("</div>",$startContent);
 	$content = $arr[0];
 	$content .= "</div>";
-	?>
+	
+	// Call templates
+	require("templates/_header.php");	
+	require("templates/chapterPage.php");
+	require("templates/_footer.php");	
+}
 
-	<!DOCTYPE html>
-	<html>
-	<head>
-		<title>My Novel - <?= $novelName . " - Chapter " . $chapter ?></title>
-	    <meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" href="style.css">
-	</head>
-	<body style=" background-color: rgb(30, 30, 30);">
-		<div style="margin: 10px; padding-top: 20px; padding-bottom: 20px; color: white;">
-			<h2><?= $novelName . " - Chapter " . $chapter ?></h2>
-			<h3><?= $chapterName ?></h3>
-			<center>
-				<p style="padding: 10px;">
-				<a href="index.php?novel=<?= $novel ?>&chapter=<?= $chapter-1 ?>">< Prev</a>
-				|
-				<a href="index.php?novel=<?= $novel ?>" style="color: white">TOC</a>
-				|
-				<a href="./" style="color: white">HOME</a>
-
-			<?php if ($chapter < $latest_chapter) { ?>
-				|
-				<a href="index.php?novel=<?= $novel ?>&chapter=<?= $chapter+1 ?>">Next ></a>
-				</p>
-			<?php } ?>
-			</center>
-			
-			<?php if(sizeof($content)!=0) { ?>
-
-			<div style="font-family: 'Montserrat'"><?= $content ?></div>
-			
-			<?php } else { ?>
-
-			<center>
-				<h1>Chapter not available!</h1>
-			</center>
-
-			<?php } ?>
-
-			<h3 style="color:white"><?= $chapterName ?></h3>
-			<center>
-				<p style="padding: 10px;">
-				<a href="index.php?novel=<?= $novel ?>&chapter=<?= $chapter-1 ?>">< Prev</a>
-				|
-				<a href="index.php?novel=<?= $novel ?>" style="color: white">TOC</a>
-				|
-				<a href="./" style="color: white">HOME</a>
-
-    			<?php if ($chapter < $latest_chapter) { ?>
-    				|
-    				<a href="index.php?novel=<?= $novel ?>&chapter=<?= $chapter+1 ?>">Next ></a>
-    				</p>
-    			<?php } ?>
-			</center>
-		</div>
-	</body>
-	</html>
-<?php }
+// Homepage
+if (!isset($_GET['novel'])){ 
+	getHomePage();
+} 
+// ToC Page
+else if (isset($_GET['novel']) && !isset($_GET['chapter'])) {
+	getTocPage();
+} 
+// Chapter Page
+else {
+	getChapterPage();
+}
