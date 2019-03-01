@@ -75,9 +75,9 @@ function chapterNavigation($novel, $chapter, $latestChapter = false){
 	}
 		
 	$linkToc = 'index.php?novel='.$novel;
-	$str .= '<a href="'.$linkToc.'">TOC</a>';
+	$str .= '<a href="'.$linkToc.'" style="color: white">TOC</a>';
 	$str .= '	|	';
-	$str .= '<a href="./">HOME</a>';
+	$str .= '<a href="./" style="color: white">HOME</a>';
 	
 	if (!$latestChapter){
 		$linkNext = 'index.php?novel='.$novel.'&chapter='.($chapter+1);
