@@ -69,18 +69,18 @@ function chapterNavigation($novel, $chapter, $latestChapter = false){
 	$str .= '<p style="padding: 10px;">';
 	
 	if ($chapter !== 1){
-		$linkPrev = 'index.php?novel='.$novel.'&chapter='.($chapter-1);
+		$linkPrev = 'index.html?novel='.$novel.'&chapter='.($chapter-1);
 		$str .= '<a href="'.$linkPrev.'">< PREV</a>';
 		$str .= '	|	';
 	}
 		
-	$linkToc = 'index.php?novel='.$novel;
+	$linkToc = 'index.html?novel='.$novel;
 	$str .= '<a href="'.$linkToc.'">TOC</a>';
 	$str .= '	|	';
 	$str .= '<a href="./">HOME</a>';
 	
 	if (!$latestChapter){
-		$linkNext = 'index.php?novel='.$novel.'&chapter='.($chapter+1);
+		$linkNext = 'index.html?novel='.$novel.'&chapter='.($chapter+1);
 		$str .= '	|	';
 		$str .= '<a href="'.$linkNext.'">NEXT ></a>';
 	}
@@ -100,8 +100,8 @@ function getHomePage(){
 	foreach ($novels as $novel) { 
 		$novelName = ucwords(str_replace("-"," ",$novel));
 		$url = "https://boxnovel.com/novel/$novel/?";
-		$header = file_get_contents("templates/_header.php");
-		$footer = file_get_contents("templates/_footer.php");
+		$header = file_get_contents("templates/_header.html");
+		$footer = file_get_contents("templates/_footer.html");
 
 		curl_setopt($curl, CURLOPT_URL, $url);
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
@@ -118,7 +118,7 @@ function getHomePage(){
 		$data["new"] = $new;
 		
 		// Get page templates and interpolate
-		$template = file_get_contents("templates/homePage.php");
+		$template = file_get_contents("templates/homePage.html");
 		$str .= interpolate($data, $template);
 	}	
 	
@@ -130,9 +130,9 @@ function getTocPage(){
 	$novel = $_GET['novel'];
 	$novelName = ucwords(str_replace("-"," ",$novel));
 	$url = "https://boxnovel.com/novel/$novel/?";
-	$header = file_get_contents("templates/_header.php");
-	$footer = file_get_contents("templates/_footer.php");
-	$temp = '<p style="border-bottom: 1px solid;"><a href="index.php?novel={novel}&chapter={chapter}">{chapterName}</a> <span style="float: right;">
+	$header = file_get_contents("templates/_header.html");
+	$footer = file_get_contents("templates/_footer.html");
+	$temp = '<p style="border-bottom: 1px solid;"><a href="index.html?novel={novel}&chapter={chapter}">{chapterName}</a> <span style="float: right;">
 	{new} {time}</span></p>';
 	$str = '';
 
@@ -158,7 +158,7 @@ function getTocPage(){
 		
 	$latest_chapter = 0;
 	$chapters = [];
-	$template = file_get_contents("templates/tocPage.php");
+	$template = file_get_contents("templates/tocPage.html");
 
 	// Interpolate for each chapters
 	for ($i = 0; $i < sizeof($name); $i++) {
@@ -186,8 +186,8 @@ function getChapterPage(){
 	global $curl;
 	$novel = $_GET['novel'];
 	$chapter = $_GET['chapter'];
-	$header = file_get_contents("templates/_header.php");
-	$footer = file_get_contents("templates/_footer.php");
+	$header = file_get_contents("templates/_header.html");
+	$footer = file_get_contents("templates/_footer.html");
 	$url = "https://boxnovel.com/novel/$novel/?";
 	$novelName = ucwords(str_replace("-"," ",$novel));
 
@@ -239,7 +239,6 @@ function getChapterPage(){
 		preg_match_all('!<div class="text\-left">!', $result, $match, PREG_OFFSET_CAPTURE);
 	}
 	
-	// TODO: if no content say  
 	if(sizeof($match[0]) > 0) {
 		$content = $match[0];
 		$startIndex = $match[0][0][1];
@@ -266,7 +265,7 @@ function getChapterPage(){
 	$data["content"] = $content;
 	
 	// Get page templates and interpolate
-	$template = file_get_contents("templates/chapterPage.php");
+	$template = file_get_contents("templates/chapterPage.html");
 	$str = interpolate($data, $template);
 	
 	// Call templates
