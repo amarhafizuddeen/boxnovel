@@ -69,18 +69,18 @@ function chapterNavigation($novel, $chapter, $latestChapter = false){
 	$str .= '<p style="padding: 10px;">';
 	
 	if ($chapter !== 1){
-		$linkPrev = 'index.html?novel='.$novel.'&chapter='.($chapter-1);
+		$linkPrev = 'index.php?novel='.$novel.'&chapter='.($chapter-1);
 		$str .= '<a href="'.$linkPrev.'">< PREV</a>';
 		$str .= '	|	';
 	}
 		
-	$linkToc = 'index.html?novel='.$novel;
+	$linkToc = 'index.php?novel='.$novel;
 	$str .= '<a href="'.$linkToc.'">TOC</a>';
 	$str .= '	|	';
 	$str .= '<a href="./">HOME</a>';
 	
 	if (!$latestChapter){
-		$linkNext = 'index.html?novel='.$novel.'&chapter='.($chapter+1);
+		$linkNext = 'index.php?novel='.$novel.'&chapter='.($chapter+1);
 		$str .= '	|	';
 		$str .= '<a href="'.$linkNext.'">NEXT ></a>';
 	}
@@ -132,7 +132,7 @@ function getTocPage(){
 	$url = "https://boxnovel.com/novel/$novel/?";
 	$header = file_get_contents("templates/_header.html");
 	$footer = file_get_contents("templates/_footer.html");
-	$temp = '<p style="border-bottom: 1px solid;"><a href="index.html?novel={novel}&chapter={chapter}">{chapterName}</a> <span style="float: right;">
+	$temp = '<p style="border-bottom: 1px solid;"><a href="index.php?novel={novel}&chapter={chapter}">{chapterName}</a> <span style="float: right;">
 	{new} {time}</span></p>';
 	$str = '';
 
