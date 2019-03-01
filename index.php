@@ -63,6 +63,35 @@ function interpolate($data, $template){
 	return $template;
 }
 
+// returns string containing center > p > a tags.
+function chapterNavigation($novel, $chapter, $latestChapter = false){
+	$str = '<center>';
+	$str .= '<p style="padding: 10px;">';
+	
+	if ($chapter !== 1){
+		$linkPrev = 'index.php?novel='.$novel.'&chapter='.($chapter-1);
+		$str .= '<a href="'.$linkPrev.'">< PREV</a>';
+		$str .= '	|	';
+	}
+		
+	$linkToc = 'index.php?novel='.$novel;
+	$str .= '<a href="'.$linkToc.'">TOC</a>';
+	$str .= '	|	';
+	$str .= '<a href="./">HOME</a>';
+	
+	if (!$latestChapter){
+		$linkNext = 'index.php?novel='.$novel.'&chapter='.($chapter+1);
+		$str .= '	|	';
+		$str .= '<a href="'.$linkNext.'">NEXT ></a>';
+	}
+	
+	$str .= '<p style="padding: 10px;">';
+	$str .= '</center>';
+	
+	return $str;
+	
+}
+
 function getHomePage(){
 	global $curl;
 	$novels = array("king-of-gods", "the-legend-of-futian", "reincarnation-of-the-strongest-sword-god", "library-of-heavens-path", "mmorpg-martial-gamer");
@@ -157,7 +186,8 @@ function getChapterPage(){
 	global $curl;
 	$novel = $_GET['novel'];
 	$chapter = $_GET['chapter'];
-	    
+	$header = file_get_contents("templates/_header.php");
+	$footer = file_get_contents("templates/_footer.php");
 	$url = "https://boxnovel.com/novel/$novel/?";
 	$novelName = ucwords(str_replace("-"," ",$novel));
 
@@ -208,19 +238,39 @@ function getChapterPage(){
 	if(sizeof($match[0]) === 0) {
 		preg_match_all('!<div class="text\-left">!', $result, $match, PREG_OFFSET_CAPTURE);
 	}
-
-	$content = $match[0];
-	$startIndex = $match[0][0][1];
-	$startContent = substr($result,$startIndex);
-
-	$arr = explode("</div>",$startContent);
-	$content = $arr[0];
-	$content .= "</div>";
+	
+	// TODO: if no content say  
+	if(sizeof($match[0]) > 0) {
+		$content = $match[0];
+		$startIndex = $match[0][0][1];
+		$startContent = substr($result,$startIndex);
+	
+		$arr = explode("</div>",$startContent);
+		$content = $arr[0];
+		$content .= "</div>";
+	} else {
+		$content = '<center><h1>Chapter not available!</h1></center>';
+	}
+	 
+	// Get navigation for interpolation
+	$chapter = intval($chapter);
+	$isLatestChapter = $chapter == $latest_chapter ? true : false;
+	$chapterNavigation = chapterNavigation($novel, $chapter, $isLatestChapter);
+	
+	// Bind data to send for interpolation
+	$data = [];
+	$data["novelName"] = $novelName;
+	$data["chapter"] = $chapter;
+	$data["chapterName"] = $chapterName;
+	$data["chapterNavigation"] = $chapterNavigation;
+	$data["content"] = $content;
+	
+	// Get page templates and interpolate
+	$template = file_get_contents("templates/chapterPage.php");
+	$str = interpolate($data, $template);
 	
 	// Call templates
-	require("templates/_header.php");	
-	require("templates/chapterPage.php");
-	require("templates/_footer.php");	
+	echo $header . $str . $footer;
 }
 
 // Homepage
