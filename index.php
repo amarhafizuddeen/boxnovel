@@ -18,7 +18,8 @@ function getTime($result){
 		// Explode the array on </span> and get content inside <i></i>   
 		$arr = explode("</span>",$startContent);
 		$time = $arr[0];
-		$time .= "</span>";
+		$time = trim(str_replace('<span class="chapter-release-date">', '', $time));
+		$time = str_replace('</span>', '', $time);
 		
 		$times[] = $time; 
 	}
@@ -51,29 +52,48 @@ function timeIsNew($times){
 	return $arr;
 }
 
+function interpolate($data, $template){
+	
+	foreach($data as $key => $value) {
+		$find = "{".$key."}";
+		$replace = $value;
+		$template = str_replace($find, $replace, $template);
+	}
+	
+	return $template;
+}
+
 function getHomePage(){
 	global $curl;
 	$novels = array("king-of-gods", "the-legend-of-futian", "reincarnation-of-the-strongest-sword-god", "library-of-heavens-path", "mmorpg-martial-gamer");
-
+	$str = "";
+	
 	foreach ($novels as $novel) { 
-		$timeChange = false;
 		$novelName = ucwords(str_replace("-"," ",$novel));
 		$url = "https://boxnovel.com/novel/$novel/?";
+		$header = file_get_contents("templates/_header.php");
+		$footer = file_get_contents("templates/_footer.php");
 
 		curl_setopt($curl, CURLOPT_URL, $url);
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-
 		$result = curl_exec($curl);
 
 		//match time released
 		$time = getTime($result);
 		$new = timeIsNew($time);
+		$new = $new[0] ? "NEW" : "";
 		
-		// Call templates
-		require("templates/_header.php");
-		require("templates/homePage.php");
-		require("templates/_footer.php");
+		$data["novel"] = $novel;
+		$data["novelName"] = $novelName;
+		$data["time"] = $time[0];
+		$data["new"] = $new;
+		
+		// Get page templates and interpolate
+		$template = file_get_contents("templates/homePage.php");
+		$str .= interpolate($data, $template);
 	}	
+	
+	echo $header . $str . $footer;
 }
 	
 function getTocPage(){
@@ -81,6 +101,11 @@ function getTocPage(){
 	$novel = $_GET['novel'];
 	$novelName = ucwords(str_replace("-"," ",$novel));
 	$url = "https://boxnovel.com/novel/$novel/?";
+	$header = file_get_contents("templates/_header.php");
+	$footer = file_get_contents("templates/_footer.php");
+	$temp = '<p style="border-bottom: 1px solid;"><a href="index.php?novel={novel}&chapter={chapter}">{chapterName}</a> <span style="float: right;">
+	{new} {time}</span></p>';
+	$str = '';
 
 	curl_setopt($curl, CURLOPT_URL, $url);
 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
@@ -104,24 +129,28 @@ function getTocPage(){
 		
 	$latest_chapter = 0;
 	$chapters = [];
+	$template = file_get_contents("templates/tocPage.php");
 
+	// Interpolate for each chapters
 	for ($i = 0; $i < sizeof($name); $i++) {
-		preg_match_all('!\d+\s!', $name[$i], $matches);
+		preg_match_all('!(\d)+[^\s]!', $name[$i], $matches);
 		$var = implode('', $matches[0]);
 		$var = str_replace(' ', '', $var);
 
 		if (isset($time[$i])) {
-			$chapters[$i]["var"] = $var;
-			$chapters[$i]["name"] = $name[$i];
-			$chapters[$i]["new"] = $new[$i];
-			$chapters[$i]["time"] = $time[$i];
+			$data["novel"] = $novel;
+			$data["chapter"] = $var;
+			$data["chapterName"] = $name[$i];
+			$data["new"] = $new[$i];
+			$data["time"] = $time[$i];
 		}
+		
+		$str = $str . interpolate($data, $temp);
 	}
 	
-	// Call templates
-	require("templates/_header.php");	
-	require("templates/tocPage.php");	
-	require("templates/_footer.php");		
+	// Interpolate the chapters into main template
+	$str = str_replace("{content}", $str, $template);
+	echo $header . $str . $footer;	
 }
 	
 function getChapterPage(){
@@ -151,13 +180,14 @@ function getChapterPage(){
 	$chapterName = "Chapter name not found";
 
 	for ($i = 0; $i < sizeof($name); $i++) {
-		preg_match_all('!\d+\s!', $name[$i], $matches);
+		preg_match_all('!\d+[^\s]*[^(039;)]*[\-]*!', $name[$i], $matches);
 		$var = implode('', $matches[0]);
-		$var = str_replace(' ', '', $var);
+		$var = explode('-', $var);
+		$var = str_replace(' ', '', $var[0]);
 
 		if ($i == 0)
 			$latest_chapter = $var;
-
+			
 		if ($var === $chapter){
 			$chapterName = $name[$i];
 			break;
