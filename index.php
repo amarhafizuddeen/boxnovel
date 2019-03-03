@@ -160,11 +160,11 @@ function getTocPage(){
 	$chapters = [];
 	$template = file_get_contents("templates/tocPage.html");
 
-	// Interpolate for each chapters
+	// Interpolate data for each chapters
 	for ($i = 0; $i < sizeof($name); $i++) {
-		preg_match_all('!(\d)+[^\s]!', $name[$i], $matches);
-		$var = implode('', $matches[0]);
-		$var = str_replace(' ', '', $var);
+		$arr = explode(" ", $name[$i]);
+		$arr = explode(" ", $arr[1]);
+		$var = $arr[0];
 
 		if($i < 30)
 			$new = $isNew[$i] ? "NEW" : "";
