@@ -154,7 +154,7 @@ function getTocPage(){
 
 	//match time released
 	$time = getTime($result);
-	$new = timeIsNew($time);
+	$isNew = timeIsNew($time);
 		
 	$latest_chapter = 0;
 	$chapters = [];
@@ -166,11 +166,16 @@ function getTocPage(){
 		$var = implode('', $matches[0]);
 		$var = str_replace(' ', '', $var);
 
+		if($i < 30)
+			$new = $isNew[$i] ? "NEW" : "";
+		else
+			$new = false;
+
 		if (isset($time[$i])) {
 			$data["novel"] = $novel;
 			$data["chapter"] = $var;
 			$data["chapterName"] = $name[$i];
-			$data["new"] = $new[$i];
+			$data["new"] = $new;
 			$data["time"] = $time[$i];
 		}
 		
