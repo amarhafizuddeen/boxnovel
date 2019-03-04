@@ -1,7 +1,6 @@
 # Boxnovel
 
 A web scrapping application developed using php.
-Note: The coding structure is messy since I focused on the functionality only.
 
 # What I Learned
 
