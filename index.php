@@ -1,5 +1,4 @@
 <?php 
-session_start();
 $curl = curl_init();
 
 function getTime($result){
@@ -64,7 +63,7 @@ function interpolate($data, $template){
 }
 
 // returns string containing center > p > a tags.
-function chapterNavigation($novel, $chapter, $latestChapter = false){
+function chapterNavigation($novel, $chapter, $isLatestChapter = false){
 	$str = '<center>';
 	$str .= '<p style="padding: 10px;">';
 	
@@ -79,7 +78,7 @@ function chapterNavigation($novel, $chapter, $latestChapter = false){
 	$str .= '	|	';
 	$str .= '<a href="./" style="color: white">HOME</a>';
 	
-	if (!$latestChapter){
+	if (!$isLatestChapter){
 		$linkNext = 'index.php?novel='.$novel.'&chapter='.($chapter+1);
 		$str .= '	|	';
 		$str .= '<a href="'.$linkNext.'">NEXT ></a>';
