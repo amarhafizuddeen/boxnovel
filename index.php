@@ -93,7 +93,7 @@ function chapterNavigation($novel, $chapter, $isLatestChapter = false){
 
 function getHomePage(){
 	global $curl;
-	$novels = array("king-of-gods", "the-legend-of-futian", "reincarnation-of-the-strongest-sword-god", "library-of-heavens-path", "mmorpg-martial-gamer");
+	$novels = array("white-robed-chief", "king-of-gods", "the-legend-of-futian", "reincarnation-of-the-strongest-sword-god", "library-of-heavens-path", "mmorpg-martial-gamer");
 	$str = "";
 	
 	foreach ($novels as $novel) { 
