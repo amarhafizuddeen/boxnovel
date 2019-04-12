@@ -62,6 +62,26 @@ function interpolate($data, $template){
 	return $template;
 }
 
+function stripScript($content) {
+	$content = str_replace("<div class='code-block code-block-1' style='margin: 8px 0; clear: both;'>", '', $content);
+	$content = str_replace("<div class='code-block code-block-2' style='margin: 8px 0; clear: both;'>", '', $content);
+	$content = str_replace("<div class='code-block code-block-3' style='margin: 8px 0; clear: both;'>", '', $content);
+	$content = str_replace("<div class='code-block code-block-4' style='margin: 8px 0; clear: both;'>", '', $content);
+	$content = str_replace("<div class='code-block code-block-5' style='margin: 8px 0; clear: both;'>", '', $content);
+	$content = str_replace('<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>', '', $content);
+	$content = str_replace('<ins class="adsbygoogle"', '', $content);
+	$content = str_replace('style="display:block; text-align:center;"', '', $content);
+	$content = str_replace('data-ad-layout="in-article"', '', $content);
+	$content = str_replace('data-ad-format="fluid"', '', $content);
+	$content = str_replace('data-ad-client="ca-pub-4659203075673373"', '', $content);
+	$content = str_replace('data-ad-slot="1888842457"></ins>', '', $content);
+	$content = str_replace('<script>', '', $content);
+	$content = str_replace('(adsbygoogle = window.adsbygoogle || []).push({});', '', $content);
+	$content = str_replace('</script></div>', '', $content);
+	
+	return $content;
+}
+
 // returns string containing center > p > a tags.
 function chapterNavigation($novel, $chapter, $isLatestChapter = false){
 	$str = '<center>';
@@ -242,11 +262,14 @@ function getChapterPage(){
 	if(sizeof($match[0]) === 0) {
 		preg_match_all('!<div class="text\-left">!', $result, $match, PREG_OFFSET_CAPTURE);
 	}
+
 	
 	if(sizeof($match[0]) > 0) {
 		$content = $match[0];
 		$startIndex = $match[0][0][1];
 		$startContent = substr($result,$startIndex);
+		
+		$startContent = stripScript($startContent);
 	
 		$arr = explode("</div>",$startContent);
 		$content = $arr[0];
