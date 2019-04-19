@@ -270,8 +270,7 @@ function getChapterPage(){
 		$startContent = substr($result,$startIndex);
 		
 		$startContent = stripScript($startContent);
-	
-		$arr = explode("</div>",$startContent);
+		$arr = explode("<div class=\"c-select-bottom\">",$startContent);
 		$content = $arr[0];
 		$content .= "</div>";
 	} else {
