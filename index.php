@@ -84,7 +84,8 @@ function stripScript($content) {
 
 // returns string containing center > p > a tags.
 function chapterNavigation($novel, $chapter, $isLatestChapter = false){
-	$str = '<center>';
+	$str = '<div style="color: white">';
+	$str .= '<center>';
 	$str .= '<p style="padding: 10px;">';
 	
 	if ($chapter !== 1){
@@ -106,6 +107,7 @@ function chapterNavigation($novel, $chapter, $isLatestChapter = false){
 	
 	$str .= '<p style="padding: 10px;">';
 	$str .= '</center>';
+	$str .= '</div>';
 	
 	return $str;
 	
