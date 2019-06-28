@@ -250,6 +250,10 @@ function getChapterPage(){
 		} 
 	}
 
+	// Quick fix for I Alone Level Up chapter 270
+	$var = $novel == 'i-alone-level-up' && $var == '270' ? '270-end' : $var;
+
+
 	//GET CONTENT
 	$url = "https://boxnovel.com/novel/" . $novel . "/chapter-" . $var . "/";
 
@@ -258,7 +262,7 @@ function getChapterPage(){
 
 	$result = curl_exec($curl);
 	$result = str_replace("	","",$result);
-
+	
 	preg_match_all('!<div class="cha\-words">!', $result, $match, PREG_OFFSET_CAPTURE);
 
 	if(sizeof($match[0]) === 0) {
