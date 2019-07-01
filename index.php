@@ -78,6 +78,16 @@ function stripScript($content) {
 	$content = str_replace('<script>', '', $content);
 	$content = str_replace('(adsbygoogle = window.adsbygoogle || []).push({});', '', $content);
 	$content = str_replace('</script></div>', '', $content);
+	$content = str_replace('<div class="ad c-ads custom-code body-bottom-ads">', '', $content);
+	$content = str_replace('<!-- QC van ban hinh anh -->', '', $content);
+	$content = str_replace('style="display:block"  data-ad-slot="6603264463" data-ad-format="auto" data-full-width-responsive="true"></ins>', '', $content);
+	$content = str_replace('</div>
+
+
+	</div>
+</div>
+</div>
+</div></div>', '', $content);
 	
 	return $content;
 }
