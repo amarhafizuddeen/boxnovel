@@ -84,10 +84,10 @@ function stripScript($content) {
 	$content = str_replace('</div>
 
 
+		</div>
 	</div>
-</div>
-</div>
-</div></div>', '', $content);
+	</div>
+	</div></div>', '', $content);
 	
 	return $content;
 }
