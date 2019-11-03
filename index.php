@@ -211,6 +211,7 @@ function getTocPage(){
 		}
 		
 		$str = $str . interpolate($data, $temp);
+		if ($var == 1) break;
 	}
 	
 	// Interpolate the chapters into main template
