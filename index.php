@@ -180,7 +180,7 @@ function getTocPage(){
 	$chapters = $match[0];
 
 	//match name
-	preg_match_all('!Chapter [\d\s\w\'’\?\!\,\-\(\)(&#039;)]*!', $result, $match);
+	preg_match_all('!Chapter [\d\s\w\'’\?\!\.\,\-\(\)(&#039;)]*!', $result, $match);
 	$name = $match[0];
 
 	//match time released
@@ -240,7 +240,7 @@ function getChapterPage(){
 	$chapters = $match[0];
 
 	//match name
-	preg_match_all('!Chapter [\d\s\w\'’\,\?\!\-\(\)(&#039;)]*!', $result, $match);
+	preg_match_all('!Chapter [\d\s\w\'’\.\,\?\!\-\(\)(&#039;)]*!', $result, $match);
 	$name = $match[0];
 
 	$latest_chapter = 0;
