@@ -1,6 +1,10 @@
 <?php 
 $curl = curl_init();
 
+function getNovels(){
+    return array("i-alone-level-up", "tales-of-demons-and-gods", "versatile-mage", "black-tech-internet-cafe-system", "survival-records-of-3650-days-in-the-otherworld", "legend-of-ling-tian", "monster-pet-evolution", "white-robed-chief", "the-human-emperor", "king-of-gods", "the-legend-of-futian", "reincarnation-of-the-strongest-sword-god", "library-of-heavens-path", "mmorpg-martial-gamer")
+}
+
 function getTime($result){
 	$regexTime = '!<span class="chapter\-release\-date">!';
 	preg_match_all($regexTime, $result, $match, PREG_OFFSET_CAPTURE);
@@ -125,7 +129,7 @@ function chapterNavigation($novel, $chapter, $isLatestChapter = false){
 
 function getHomePage(){
 	global $curl;
-	$novels = array("i-alone-level-up", "tales-of-demons-and-gods", "versatile-mage", "black-tech-internet-cafe-system", "survival-records-of-3650-days-in-the-otherworld", "legend-of-ling-tian", "monster-pet-evolution", "white-robed-chief", "the-human-emperor", "king-of-gods", "the-legend-of-futian", "reincarnation-of-the-strongest-sword-god", "library-of-heavens-path", "mmorpg-martial-gamer");
+	$novels = getNovels();
 	$str = "";
 	
 	foreach ($novels as $novel) { 
