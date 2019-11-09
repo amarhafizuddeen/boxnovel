@@ -2,7 +2,7 @@
 $curl = curl_init();
 
 function getNovels(){
-    return array("i-alone-level-up", "tales-of-demons-and-gods", "versatile-mage", "black-tech-internet-cafe-system", "survival-records-of-3650-days-in-the-otherworld", "legend-of-ling-tian", "monster-pet-evolution", "white-robed-chief", "the-human-emperor", "king-of-gods", "the-legend-of-futian", "reincarnation-of-the-strongest-sword-god", "library-of-heavens-path", "mmorpg-martial-gamer")
+    return array("i-alone-level-up", "tales-of-demons-and-gods", "versatile-mage", "black-tech-internet-cafe-system", "survival-records-of-3650-days-in-the-otherworld", "legend-of-ling-tian", "monster-pet-evolution", "white-robed-chief", "the-human-emperor", "king-of-gods", "the-legend-of-futian", "reincarnation-of-the-strongest-sword-god", "library-of-heavens-path", "mmorpg-martial-gamer");
 }
 
 function getTime($result){
