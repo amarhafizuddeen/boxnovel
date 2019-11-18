@@ -294,9 +294,9 @@ function getChapterPage(){
 
 	// Quick fix for The World Turned Into A Game After I Woke Up - Chapter 301
 	if ($novel == 'the-world-turned-into-a-game-after-i-woke-up')
-		$var = $var == '301' ? 'Chapter-301-end' : $var;
+		$var = $var == '301' ? '301-end' : $var;
 
-        //GET CONTENT
+			//GET CONTENT
 	$url = "https://boxnovel.com/novel/" . $novel . "/chapter-" . $var . "/";
 
 	curl_setopt($curl, CURLOPT_URL, $url);
