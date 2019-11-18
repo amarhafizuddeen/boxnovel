@@ -289,10 +289,12 @@ function getChapterPage(){
 	}
 
 	// Quick fix for I Alone Level Up chapter 270
-	$var = $novel == 'i-alone-level-up' && $var == '270' ? '270-end' : $var;
+	if ($novel == 'i-alone-level-up')
+		$var == '270' ? '270-end' : $var;
 
 	// Quick fix for The World Turned Into A Game After I Woke Up - Chapter 301
-	$var = $novel == 'the-world-turned-into-a-game-after-i-woke-up' && $var == '301' ? 'Chapter-301-end' : $var;
+	if ($novel == 'the-world-turned-into-a-game-after-i-woke-up')
+		$var = $var == '301' ? 'Chapter-301-end' : $var;
 
         //GET CONTENT
 	$url = "https://boxnovel.com/novel/" . $novel . "/chapter-" . $var . "/";
