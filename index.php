@@ -7,6 +7,7 @@ function getNovels(){
 			"tales-of-demons-and-gods", 
 			"versatile-mage", 
 			"black-tech-internet-cafe-system", 
+			"the-avalon-of-five-elements",
 			"survival-records-of-3650-days-in-the-otherworld", 
 			"legend-of-ling-tian", 
 			"monster-pet-evolution", 
@@ -296,7 +297,11 @@ function getChapterPage(){
 	if ($novel == 'the-world-turned-into-a-game-after-i-woke-up')
 		$var = $var == '301' ? '301-end' : $var;
 
-			//GET CONTENT
+	// Quick fix for "dragon-kings-son-in-law - Chapter 790
+	if ($novel == 'dragon-kings-son-in-law')
+		$var = $var == '790' ? '790-end' : $var;
+
+	//GET CONTENT
 	$url = "https://boxnovel.com/novel/" . $novel . "/chapter-" . $var . "/";
 
 	curl_setopt($curl, CURLOPT_URL, $url);
