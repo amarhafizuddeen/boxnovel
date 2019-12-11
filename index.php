@@ -4,6 +4,7 @@ $curl = curl_init();
 function getNovels(){
 		return [
 			"i-alone-level-up", 
+                        "the-book-eating-magician",
 			"tales-of-demons-and-gods", 
 			"versatile-mage", 
 			"black-tech-internet-cafe-system", 
