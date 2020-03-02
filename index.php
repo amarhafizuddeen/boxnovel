@@ -3,6 +3,7 @@ $curl = curl_init();
 
 function getNovels(){
 		return [
+			"lord-of-the-mysteries",
 			"i-alone-level-up", 
                         "the-book-eating-magician",
 			"tales-of-demons-and-gods", 
