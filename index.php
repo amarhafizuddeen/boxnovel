@@ -5,7 +5,7 @@ function getNovels(){
 		return [
 			"lord-of-the-mysteries",
 			"i-alone-level-up", 
-                        "the-book-eating-magician",
+			"the-book-eating-magician",
 			"tales-of-demons-and-gods", 
 			"versatile-mage", 
 			"black-tech-internet-cafe-system", 
@@ -19,11 +19,8 @@ function getNovels(){
 			"dragon-kings-son-in-law",
 			"true-martial-world",
 			"the-world-online",
-			"king-of-gods", 
-			"the-legend-of-futian", 
-			"reincarnation-of-the-strongest-sword-god", 
-			"library-of-heavens-path", 
-			"mmorpg-martial-gamer"
+			"king-of-gods",  
+			"reincarnation-of-the-strongest-sword-god"
 		];
 }
 
