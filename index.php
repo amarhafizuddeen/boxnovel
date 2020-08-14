@@ -163,6 +163,7 @@ function getHomePage(){
 
 		curl_setopt($curl, CURLOPT_URL, $url);
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
 		$result = curl_exec($curl);
 
 		//match time released
